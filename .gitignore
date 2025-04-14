@@ -8,6 +8,8 @@ __pycache__/
 *.pyo
 *.pyd
 *.DS_Store
+*.swp
+*.swo
 
 # Configuración de editores
 .vscode/
@@ -21,3 +23,12 @@ desktop.ini
 
 # Checkpoints de Jupyter
 .ipynb_checkpoints
+
+# Cython compiled files
+*.c
+*.cpp
+*.so
+*.pyd
+
+# Archivos de configuración de Jupyter
+.ipynb_checkpoints/
