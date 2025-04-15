@@ -4,7 +4,7 @@ import { FaBars } from 'react-icons/fa';
 import { FaChevronRight } from 'react-icons/fa';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom'; // Importamos React Router
 import NumberDetector from './NumberDetector';
-
+import EmotionsDetector from './EmotionsDetector';
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -55,7 +55,9 @@ function App() {
                   <li>
                     <Link to="/number-detector">Number Detector</Link>
                   </li>
-                  <li>Emotions Detector</li>
+                  <li>
+                    <Link to="/emotion-detector">Emotions Detector</Link>
+                  </li>
                 </ul>
               </div>
             )}
@@ -88,6 +90,7 @@ function App() {
             }
           />
           <Route path="/number-detector" element={<NumberDetector />} />
+          <Route path="/emotion-detector" element={<EmotionsDetector />} />
         </Routes>
       </div>
     </Router>

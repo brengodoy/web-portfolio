@@ -162,29 +162,33 @@ main h1 {
   text-align: center;
   font-size: 2.5rem;
   margin-bottom: 1rem;
+  color: black;
 }
 
 .number-detector p {
   font-size: 1.1rem;
   line-height: 1.6;
+  color: black;
 }
 
 .canvas-wrapper {
   background-color: white;
-  padding: 1rem;
+  padding: 0rem;
   border-radius: 10px;
   box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
-  margin: 2rem 0;
+  margin: 0rem 15rem;
   text-align: center;
+  border: 2px solid black
 }
 
 .canvas-wrapper .prediction-title {
   font-weight: bold;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0rem;
+  margin-top: auto;
 }
 
 .canvas-wrapper hr {
-  margin: 0.5rem 0 1rem 0;
+  margin: 0rem 0 1rem 0;
   border: 1px solid black;
 }
 
@@ -195,7 +199,7 @@ canvas {
 }
 
 .clear-button {
-  margin-top: 1rem;
+  margin-top: 0rem;
   background-color: red;
   color: white;
   border: none;
@@ -203,19 +207,71 @@ canvas {
   font-size: 1rem;
   border-radius: 8px;
   cursor: pointer;
+  margin-bottom: 0.5rem;
 }
 
 .github-note p {
   margin: 0.5rem 0;
-  font-size: 1rem;
   text-align: center;
+  font-size: 1.1rem;
+  line-height: 1.0;
+  color: black;
+  margin-top: 1rem;
 }
 
 .github-note a {
-  color: #646cff;
+  color: black;
   font-weight: bold;
   text-decoration: none;
 }
+
 .github-note a:hover {
   text-decoration: underline;
+}
+
+.emotion-detector {
+  max-width: 800px;
+  margin: 5rem auto;
+  text-align: left;
+  padding: 0 1rem;
+}
+
+.emotion-detector h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: black;
+}
+
+.emotion-detector p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: black;
+}
+
+.camera-container {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.camera-container button {
+  padding: 0.6rem 1.2rem;
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.camera-container button:hover {
+  background-color: #e63e3e;
+}
+
+.camera-container video {
+  max-width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
