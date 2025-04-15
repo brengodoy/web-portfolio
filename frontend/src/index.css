@@ -28,7 +28,7 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  background: linear-gradient(to bottom, #ffb200, #ee0979);
+  background: linear-gradient(to bottom, #ff6a00, #ee0979);
   flex-direction: column;
 }
 

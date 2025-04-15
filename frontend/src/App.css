@@ -60,13 +60,162 @@
   cursor: pointer;
 }
 
-/* Menú lateral */
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+  text-align: left;
+  padding: 1rem;
+}
+
+main p {
+  font-size: 1.5rem;
+  max-width: 900px;
+  margin: 0.5rem 0; /* esto reduce el espacio entre párrafos */
+}
+
+main h1 {
+  text-align: center;
+}
+
 .side-menu {
-  position: absolute;
-  top: 60px;
+  position: fixed;
+  top: 50px;
   left: 0;
   width: 200px;
   background-color: white;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   padding: 1rem;
-  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+.side-menu li {
+  padding: 0.5rem 0.7rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.6rem;
+  transition: background-color 0.2s;
+}
+
+.side-menu li:hover {
+  background-color: #f0f0f0;
+  border-radius: 4px;
+}
+
+.side-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.side-menu a {
+  color: black;
+  font-weight: normal;
+}
+
+.arrow-icon {
+  font-size: 0.8rem;
+}
+
+.sub-menu {
+  position: fixed;
+  top: 50px;
+  left: 232px; /* Justo al lado del menú principal */
+  width: 200px;
+  background-color: white;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  padding: 1.4rem;
+  z-index: 9;
+}
+
+.sub-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sub-menu li {
+  padding: 0.5rem 0.2rem;
+  cursor: pointer;
+  font-size: 1.4rem;
+  transition: background-color 0.2s;
+}
+
+.sub-menu li:hover {
+  background-color: #eaeaea;
+  border-radius: 4px;
+}
+
+.number-detector {
+  max-width: 800px;
+  margin: 5rem auto;
+  text-align: left;
+  padding: 0 1rem;
+}
+
+.number-detector h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.number-detector p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.canvas-wrapper {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.canvas-wrapper .prediction-title {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.canvas-wrapper hr {
+  margin: 0.5rem 0 1rem 0;
+  border: 1px solid black;
+}
+
+canvas {
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: crosshair;
+}
+
+.clear-button {
+  margin-top: 1rem;
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.github-note p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.github-note a {
+  color: #646cff;
+  font-weight: bold;
+  text-decoration: none;
+}
+.github-note a:hover {
+  text-decoration: underline;
 }
