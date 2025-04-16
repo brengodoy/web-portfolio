@@ -125,7 +125,7 @@ main h1 {
 .sub-menu {
   position: fixed;
   top: 50px;
-  left: 232px; /* Justo al lado del menú principal */
+  left: 232px;
   width: 200px;
   background-color: white;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
@@ -171,52 +171,18 @@ main h1 {
   color: black;
 }
 
-.canvas-wrapper {
-  background-color: white;
-  padding: 0rem;
-  border-radius: 10px;
-  box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
-  margin: 0rem 15rem;
-  text-align: center;
-  border: 2px solid black
-}
-
-.canvas-wrapper .prediction-title {
-  font-weight: bold;
-  margin-bottom: 0rem;
-  margin-top: auto;
-}
-
-.canvas-wrapper hr {
-  margin: 0rem 0 1rem 0;
-  border: 1px solid black;
-}
-
 canvas {
   border: 1px solid #ccc;
   background-color: #fff;
   cursor: crosshair;
 }
 
-.clear-button {
-  margin-top: 0rem;
-  background-color: red;
-  color: white;
-  border: none;
-  padding: 0.6rem 1.2rem;
-  font-size: 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-bottom: 0.5rem;
-}
-
 .github-note p {
-  margin: 0.5rem 0;
+  margin: 1rem 0;
   text-align: center;
   font-size: 1.1rem;
   line-height: 1.0;
   color: black;
-  margin-top: 1rem;
 }
 
 .github-note a {
@@ -274,4 +240,52 @@ canvas {
   max-width: 100%;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.canvas-container {
+  background-color: white;
+  padding: 0rem;
+  border-radius: 10px;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+  margin: 0rem 15rem;
+  text-align: center;
+  border: 2px solid black
+}
+
+.canvas-container hr {
+  margin: 0rem 0 1rem 0;
+  border: 1px solid black;
+}
+
+.prediction-title {
+  font-weight: bold;
+  margin-bottom: 0rem;
+  margin-top: auto;
+}
+
+.divider {
+  border: 0.5px solid black;
+  margin-bottom: 1rem;
+}
+
+.drawing-canvas {
+  border: 1px solid #ccc;
+  background-color: white;
+  cursor: crosshair;
+}
+
+.clear-btn {
+  margin-top: 0rem;
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+}
+
+.clear-btn:hover {
+  background-color: darkred;
 }

@@ -3,14 +3,14 @@ import { useEffect, useRef, useState } from 'react';
 
 function EmotionsDetector() {
 	const videoRef = useRef(null);
-	const streamRef = useRef(null); // ✨ Agregado para guardar el stream
+	const streamRef = useRef(null);
 	const [cameraActive, setCameraActive] = useState(false);
   
 	useEffect(() => {
 	  if (cameraActive) {
 		navigator.mediaDevices.getUserMedia({ video: true })
 		  .then((stream) => {
-			streamRef.current = stream; // ✨ Guardamos el stream
+			streamRef.current = stream;
 			if (videoRef.current) {
 			  videoRef.current.srcObject = stream;
 			  videoRef.current.play();
@@ -20,7 +20,6 @@ function EmotionsDetector() {
 			console.error("Error accessing camera:", err);
 		  });
 	  } else {
-		// ✨ Apagamos todos los tracks del stream para liberar la cámara
 		if (streamRef.current) {
 		  streamRef.current.getTracks().forEach(track => track.stop());
 		  streamRef.current = null;

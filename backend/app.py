@@ -1,12 +1,16 @@
 from flask import Flask, jsonify, request
-from PIL import Image
+from PIL import Image, ImageOps
 from torchvision import transforms
 from neural_networks import NumbersNetwork, EmotionsNetwork
+from flask_cors import CORS
+from io import BytesIO
+import base64
 import torch
 import cv2
 import numpy as np
 
 app = Flask(__name__) # creo la aplicacion web, siempre se usa '__name__'. 'Este es el archivo principal que corre la app'
+CORS(app)
 
 model_number = NumbersNetwork()
 model_number.load_state_dict(torch.load('model_number.pth', map_location=torch.device('cpu')))
@@ -22,7 +26,7 @@ emotion_transform = transforms.Compose([
     transforms.ToTensor()
 ])
 
-@app.route("/detect_number", methods=["POST"]) # decorador, cuando alguien entra a la ruta '/' ejecuta la funcion de abajo.
+@app.route("/detect_number", methods=["POST"]) # decorador, cuando alguien entra a la ruta '/tal' ejecuta la funcion de abajo.
 def detect_number():
     file = request.files.get("image")
     
@@ -67,6 +71,28 @@ def detect_emotion():
     detected_emotion_label = emotion_labels[detected_emotion]
     
     return jsonify({"prediction": detected_emotion_label})
+
+@app.route('/predict-live', methods=['POST'])
+def predict_live():
+    try:
+        data = request.get_json()
+        image_data = data['image'].split(',')[1]  # quita el encabezado de data:image/png;base64,...
+        image_bytes = base64.b64decode(image_data)
+
+        image = Image.open(BytesIO(image_bytes)).convert("L")
+        image = ImageOps.invert(image)
+        image = image.resize((28, 28))
+
+        img_tensor = transforms.ToTensor()(image).unsqueeze(0)
+
+        with torch.no_grad():
+            prediction = model_number(img_tensor)
+            predicted_class = prediction.argmax(1).item()
+
+        return jsonify({'prediction': predicted_class})
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({'error': 'Error processing image'}), 500
 
 if __name__ == "__main__": # solo corre este bloque si estoy ejecutando directamente este archivo.
     app.run(debug=True) # muestra errores detallados, y recarga automáticamente cuando guardo cambios

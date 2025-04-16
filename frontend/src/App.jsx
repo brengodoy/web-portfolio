@@ -2,7 +2,7 @@ import './App.css';
 import { useState, useEffect, useRef } from 'react';
 import { FaBars } from 'react-icons/fa';
 import { FaChevronRight } from 'react-icons/fa';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom'; // Importamos React Router
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import NumberDetector from './NumberDetector';
 import EmotionsDetector from './EmotionsDetector';
 
