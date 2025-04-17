@@ -1,9 +1,9 @@
 import './App.css';
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useState } from 'react';
 
-function NumberDetector() {
+function NumberDetector() { //Todo lo que está dentro de esta función es lo que se va a ver y lo que va a pasar cuando se use.
   const canvasRef = useRef(null);
-  const [drawing, setDrawing] = useState(false);
+  const [drawing, setDrawing] = useState(false); // saber si la persona esta dibujando o no
 
   const startDrawing = (e) => {
     const canvas = canvasRef.current;
@@ -38,8 +38,42 @@ function NumberDetector() {
   const clearCanvas = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
   };
+  
+
+  const getCanvasImage = () => {
+    const canvas = canvasRef.current;
+  
+    // canvas temporal para invertir colores y escalar
+    const tempCanvas = document.createElement("canvas");
+    const size = 28;
+    tempCanvas.width = size;
+    tempCanvas.height = size;
+    const tempCtx = tempCanvas.getContext("2d");
+  
+    // copiamos el contenido del canvas original en el canva temporal
+    tempCtx.drawImage(canvas, 0, 0, size, size);
+  
+    // los píxeles del mini canvas (28x28) se guardan en una estructura tipo array que se llama ImageData
+    const imageData = tempCtx.getImageData(0, 0, size, size);
+
+    // Invertimos los colores (negro ↔ blanco)
+    for (let i = 0; i < imageData.data.length; i += 4) {
+      // Invertimos R, G y B (dejamos Alpha igual)
+      imageData.data[i] = 255 - imageData.data[i];     // R
+      imageData.data[i + 1] = 255 - imageData.data[i + 1]; // G
+      imageData.data[i + 2] = 255 - imageData.data[i + 2]; // B
+    }
+    // edité todos los píxeles y estan guardados en imageData, los pego de nuevo en el canvas
+    tempCtx.putImageData(imageData, 0, 0);
+  
+    // Lo exportamos como imagen PNG en base64
+    return tempCanvas.toDataURL("image/png");
+  };
+  
 
   return (
     <section className="number-detector">
@@ -63,6 +97,10 @@ function NumberDetector() {
           onMouseLeave={stopDrawing}
         />
         <button className="clear-btn" onClick={clearCanvas}>Clear</button>
+        <button onClick={() => {
+          const image = getCanvasImage();
+          console.log(image); // para ver si funciona
+        }}>Obtener imagen</button>
       </div>
 
       <div className="github-note">
