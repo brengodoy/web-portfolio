@@ -1,9 +1,18 @@
 import './App.css';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+
 
 function NumberDetector() { //Todo lo que está dentro de esta función es lo que se va a ver y lo que va a pasar cuando se use.
   const canvasRef = useRef(null);
   const [drawing, setDrawing] = useState(false); // saber si la persona esta dibujando o no
+  const [prediction, setPrediction] = useState(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }, []);
 
   const startDrawing = (e) => {
     const canvas = canvasRef.current;
@@ -20,7 +29,7 @@ function NumberDetector() { //Todo lo que está dentro de esta función es lo qu
     if (!drawing) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    ctx.lineWidth = 15;
+    ctx.lineWidth = 10;
     ctx.lineCap = 'round';
     ctx.strokeStyle = 'black';
 
@@ -60,18 +69,31 @@ function NumberDetector() { //Todo lo que está dentro de esta función es lo qu
     // los píxeles del mini canvas (28x28) se guardan en una estructura tipo array que se llama ImageData
     const imageData = tempCtx.getImageData(0, 0, size, size);
 
-    // Invertimos los colores (negro ↔ blanco)
-    for (let i = 0; i < imageData.data.length; i += 4) {
-      // Invertimos R, G y B (dejamos Alpha igual)
-      imageData.data[i] = 255 - imageData.data[i];     // R
-      imageData.data[i + 1] = 255 - imageData.data[i + 1]; // G
-      imageData.data[i + 2] = 255 - imageData.data[i + 2]; // B
-    }
     // edité todos los píxeles y estan guardados en imageData, los pego de nuevo en el canvas
     tempCtx.putImageData(imageData, 0, 0);
   
     // Lo exportamos como imagen PNG en base64
     return tempCanvas.toDataURL("image/png");
+  };
+  
+  const sendImageToBackend = async (imageDataUrl) => {
+    const blob = await (await fetch(imageDataUrl)).blob(); // convertimos el base64 en blob
+  
+    const formData = new FormData();
+    formData.append("image", blob, "drawing.png");
+  
+    try {
+      const response = await fetch("http://localhost:5000/detect_number", {
+        method: "POST",
+        body: formData,
+      });
+  
+      const data = await response.json();
+      setPrediction(data.prediction);
+      console.log("Predicción:", data.prediction);
+    } catch (error) {
+      console.error("Error al enviar imagen al backend:", error);
+    }
   };
   
 
@@ -84,7 +106,7 @@ function NumberDetector() { //Todo lo que está dentro de esta función es lo qu
       </p>
 
       <div className="canvas-container">
-        <p className="prediction-title">Model predicts:</p>
+        <p className="prediction-title">Model predicts: {prediction !== null ? prediction : ""}</p>
         <hr className="divider" />
         <canvas
           ref={canvasRef}
@@ -100,6 +122,7 @@ function NumberDetector() { //Todo lo que está dentro de esta función es lo qu
         <button onClick={() => {
           const image = getCanvasImage();
           console.log(image); // para ver si funciona
+          sendImageToBackend(image);
         }}>Obtener imagen</button>
       </div>
 

@@ -34,7 +34,12 @@ def detect_number():
         return jsonify({"error": "No image uploaded"}), 400
     
     image = Image.open(file.stream)
+    image = image.convert("L")  # Escala de grises
+    image = ImageOps.invert(image)  # Invertir blanco ↔ negro
+    image = image.resize((28, 28))  # Redimensionar
+    image.save("check_input.png")
     image_transformed = transforms.ToTensor()(image).unsqueeze(0)
+    image_transformed = image_transformed.view(-1, 28*28)
     with torch.no_grad():
         logits = model_number(image_transformed)
         detected_number = logits.argmax(1).item()
