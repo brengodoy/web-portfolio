@@ -1,7 +1,6 @@
 import './App.css';
 import React, { useRef, useState, useEffect } from 'react';
 
-
 function NumberDetector() { //Todo lo que está dentro de esta función es lo que se va a ver y lo que va a pasar cuando se use.
   const canvasRef = useRef(null);
   const [drawing, setDrawing] = useState(false); // saber si la persona esta dibujando o no
@@ -13,6 +12,18 @@ function NumberDetector() { //Todo lo que está dentro de esta función es lo qu
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }, []);
+
+  let timeoutId;
+
+  const handleMouseMove = (e) => {
+    if (!drawing) return;
+    draw(e);
+
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      sendImageToBackend(canvasRef.current);
+    }, 100); // Delay para no saturar
+  };
 
   const startDrawing = (e) => {
     const canvas = canvasRef.current;
@@ -47,55 +58,44 @@ function NumberDetector() { //Todo lo que está dentro de esta función es lo qu
   const clearCanvas = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    
+    setPrediction(null);
+
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   };
   
-
-  const getCanvasImage = () => {
-    const canvas = canvasRef.current;
+  function sendImageToBackend(canvas) {
+    const dataURL = canvas.toDataURL("image/png");
   
-    // canvas temporal para invertir colores y escalar
-    const tempCanvas = document.createElement("canvas");
-    const size = 28;
-    tempCanvas.width = size;
-    tempCanvas.height = size;
-    const tempCtx = tempCanvas.getContext("2d");
+    // Convertir base64 a Blob
+    const byteString = atob(dataURL.split(',')[1]);
+    const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
   
-    // copiamos el contenido del canvas original en el canva temporal
-    tempCtx.drawImage(canvas, 0, 0, size, size);
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
   
-    // los píxeles del mini canvas (28x28) se guardan en una estructura tipo array que se llama ImageData
-    const imageData = tempCtx.getImageData(0, 0, size, size);
-
-    // edité todos los píxeles y estan guardados en imageData, los pego de nuevo en el canvas
-    tempCtx.putImageData(imageData, 0, 0);
+    const blob = new Blob([ab], { type: mimeString });
   
-    // Lo exportamos como imagen PNG en base64
-    return tempCanvas.toDataURL("image/png");
-  };
-  
-  const sendImageToBackend = async (imageDataUrl) => {
-    const blob = await (await fetch(imageDataUrl)).blob(); // convertimos el base64 en blob
-  
+    // Enviar como FormData
     const formData = new FormData();
     formData.append("image", blob, "drawing.png");
   
-    try {
-      const response = await fetch("http://localhost:5000/detect_number", {
-        method: "POST",
-        body: formData,
+    fetch("http://localhost:5000/detect_number", {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Predicción:", data.prediction);
+        setPrediction(data.prediction);
+      })
+      .catch((error) => {
+        console.error("Error al enviar imagen al backend:", error);
       });
-  
-      const data = await response.json();
-      setPrediction(data.prediction);
-      console.log("Predicción:", data.prediction);
-    } catch (error) {
-      console.error("Error al enviar imagen al backend:", error);
-    }
-  };
-  
+  }  
 
   return (
     <section className="number-detector">
@@ -114,16 +114,11 @@ function NumberDetector() { //Todo lo que está dentro de esta función es lo qu
           width={280}
           height={280}
           onMouseDown={startDrawing}
-          onMouseMove={draw}
+          onMouseMove={handleMouseMove}
           onMouseUp={stopDrawing}
           onMouseLeave={stopDrawing}
         />
         <button className="clear-btn" onClick={clearCanvas}>Clear</button>
-        <button onClick={() => {
-          const image = getCanvasImage();
-          console.log(image); // para ver si funciona
-          sendImageToBackend(image);
-        }}>Obtener imagen</button>
       </div>
 
       <div className="github-note">

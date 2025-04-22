@@ -37,7 +37,7 @@ def detect_number():
     image = image.convert("L")  # Escala de grises
     image = ImageOps.invert(image)  # Invertir blanco ↔ negro
     image = image.resize((28, 28))  # Redimensionar
-    image.save("check_input.png")
+    
     image_transformed = transforms.ToTensor()(image).unsqueeze(0)
     image_transformed = image_transformed.view(-1, 28*28)
     with torch.no_grad():
