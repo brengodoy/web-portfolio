@@ -66,8 +66,6 @@ function NumberDetector() { //Todo lo que está dentro de esta función es lo qu
   
   function sendImageToBackend(canvas) {
     const dataURL = canvas.toDataURL("image/png");
-  
-    // Convertir base64 a Blob
     const byteString = atob(dataURL.split(',')[1]);
     const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
   
@@ -79,7 +77,6 @@ function NumberDetector() { //Todo lo que está dentro de esta función es lo qu
   
     const blob = new Blob([ab], { type: mimeString });
   
-    // Enviar como FormData
     const formData = new FormData();
     formData.append("image", blob, "drawing.png");
   
@@ -89,7 +86,7 @@ function NumberDetector() { //Todo lo que está dentro de esta función es lo qu
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("Predicción:", data.prediction);
+        //console.log("Predicción:", data.prediction);
         setPrediction(data.prediction);
       })
       .catch((error) => {

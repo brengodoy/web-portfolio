@@ -242,6 +242,18 @@ canvas {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
+.camera-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+#overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
 .canvas-container {
   background-color: white;
   padding: 0rem;

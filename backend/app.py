@@ -75,7 +75,10 @@ def detect_emotion():
     emotion_labels = ["Angry", "Disgust", "Fear", "Happy", "Sad", "Surprise", "Neutral"]
     detected_emotion_label = emotion_labels[detected_emotion]
     
-    return jsonify({"prediction": detected_emotion_label})
+    return jsonify({
+        "prediction": detected_emotion_label,
+        "face": {"x": int(x), "y": int(y), "w": int(w), "h": int(h)}
+        })
 
 @app.route('/predict-live', methods=['POST'])
 def predict_live():
