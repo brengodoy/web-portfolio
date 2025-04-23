@@ -113,7 +113,7 @@ function EmotionsDetector() {
       <h2>What are you feeling?🧠❤️</h2>
       <p>
 	  This model analyzes facial expressions to predict the emotion behind them.
-	  (Upload a photo or) use your webcam, and the model will tell you what emotion it detects.
+	  Use your webcam, and the model will tell you what emotion it detects.
 	  <br />
 	  😄 Trained on a dataset with 7 emotions: angry, disgust, fear, happy, sad, surprise, and neutral.
 	  </p>

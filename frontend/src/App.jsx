@@ -5,6 +5,8 @@ import { FaChevronRight } from 'react-icons/fa';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import NumberDetector from './NumberDetector';
 import EmotionsDetector from './EmotionsDetector';
+import AboutMe from './AboutMe';
+import LetsConnect from './LetsConnect';
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -48,7 +50,9 @@ function App() {
               <li>
               <Link to="/about-me">About Me</Link>
               </li>
-              <li>Let’s Connect</li>
+              <li>
+              <Link to="/lets-connect">Let’s Connect</Link>
+              </li>
             </ul>
 
             {projectsOpen && (
@@ -93,6 +97,8 @@ function App() {
           />
           <Route path="/number-detector" element={<NumberDetector />} />
           <Route path="/emotion-detector" element={<EmotionsDetector />} />
+          <Route path="/about-me" element={<AboutMe />} />
+          <Route path="/lets-connect" element={<LetsConnect />} />
         </Routes>
       </div>
     </Router>
