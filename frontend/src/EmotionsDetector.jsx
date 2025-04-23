@@ -33,6 +33,13 @@ function EmotionsDetector() {
 		  videoRef.current.srcObject = null;
 		}
 	  }
+
+	  return () => {
+		if (streamRef.current) {
+		  streamRef.current.getTracks().forEach(track => track.stop());
+		}
+	  };
+
 	}, [cameraActive]);
 	
 	useEffect(() => {

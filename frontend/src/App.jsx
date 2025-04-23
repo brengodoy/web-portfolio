@@ -7,11 +7,14 @@ import NumberDetector from './NumberDetector';
 import EmotionsDetector from './EmotionsDetector';
 import AboutMe from './AboutMe';
 import LetsConnect from './LetsConnect';
+import { motion, AnimatePresence } from "framer-motion";
+
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [projectsOpen, setProjectsOpen] = useState(false);
   const menuRef = useRef(null);
+  const subMenuRef = useRef(null);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -30,6 +33,10 @@ function App() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  const handleMenuItemClick = () => {
+    setMenuOpen(false);  // Cierra el menú cuando se hace clic en cualquier ítem
+  };
   
 
   return (
@@ -41,34 +48,39 @@ function App() {
         </nav>
 
         {/* Menú lateral */}
-        {menuOpen && (
-          <div className="side-menu" ref={menuRef}>
+        <div className={`side-menu ${menuOpen ? "active" : ""}`} ref={menuRef}>
             <ul>
-              <li onClick={() => setProjectsOpen(!projectsOpen)}>
-                Projects <FaChevronRight className="arrow-icon" />
+              <li>
+                <Link to="/" onClick={handleMenuItemClick}>🌸 Home</Link>
+              </li>
+              <li onClick={() => setProjectsOpen(!projectsOpen)} className="projects-item">
+              Projects <FaChevronRight className="arrow-icon" />
+              <AnimatePresence>
+                {projectsOpen && (
+                  <motion.div
+                    className="sub-menu"
+                    ref={subMenuRef}
+                    initial={{ x: -200 }}
+                    animate={{ x: 0 }}
+                    exit={{ x: -200 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <ul>
+                      <li><Link to="/number-detector" onClick={handleMenuItemClick}>Number Detector</Link></li>
+                      <li><Link to="/emotion-detector" onClick={handleMenuItemClick}>Emotion Detector</Link></li>
+                    </ul>
+                  </motion.div>
+                )}
+              </AnimatePresence>
               </li>
               <li>
-              <Link to="/about-me">About Me</Link>
+              <Link to="/about-me" onClick={handleMenuItemClick}>About Me</Link>
               </li>
               <li>
-              <Link to="/lets-connect">Let’s Connect</Link>
+              <Link to="/lets-connect" onClick={handleMenuItemClick}>Let’s Connect</Link>
               </li>
             </ul>
-
-            {projectsOpen && (
-              <div className="sub-menu">
-                <ul>
-                  <li>
-                    <Link to="/number-detector">Number Detector</Link>
-                  </li>
-                  <li>
-                    <Link to="/emotion-detector">Emotions Detector</Link>
-                  </li>
-                </ul>
-              </div>
-            )}
           </div>
-        )}
 
         {/* Rutas */}
         <Routes>
