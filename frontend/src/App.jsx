@@ -45,7 +45,9 @@ function App() {
               <li onClick={() => setProjectsOpen(!projectsOpen)}>
                 Projects <FaChevronRight className="arrow-icon" />
               </li>
-              <li>About Me</li>
+              <li>
+              <Link to="/about-me">About Me</Link>
+              </li>
               <li>Let’s Connect</li>
             </ul>
 

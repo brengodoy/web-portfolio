@@ -69,9 +69,8 @@ function EmotionsDetector() {
 
 	try {
 		const response = await axios.post("http://localhost:5000/detect_emotion", formData);
-		const emotion = response.data.prediction;
-
-		drawOnCanvas(emotion);
+		const { prediction: emotion, face } = response.data;
+		drawOnCanvas(emotion, face);
 		setError(null);
 	} catch (err) {
 		console.error("Error en la request ❌", err);
@@ -80,27 +79,27 @@ function EmotionsDetector() {
 	}
 	};
 	
-	const drawOnCanvas = (emotion) => {
-	const canvas = canvasRef.current;
-	const ctx = canvas.getContext("2d");
-
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-	const boxWidth = 200;
-	const boxHeight = 200;
-	const x = canvas.width / 2 - boxWidth / 2;
-	const y = canvas.height / 2 - boxHeight / 2;
-
-	// Recuadro
-	ctx.strokeStyle = "#00FF00";
-	ctx.lineWidth = 3;
-	ctx.strokeRect(x, y, boxWidth, boxHeight);
-
-	// Texto
-	ctx.font = "20px Arial";
-	ctx.fillStyle = "#00FF00";
-	ctx.fillText(emotion, x, y - 10);
-	};
+	const drawOnCanvas = (emotion, face) => {
+		const ctx = canvasRef.current.getContext("2d");
+		ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+	  
+		if (!face) return;
+	  
+		const { x, y, w, h } = face;
+	  
+		// Dibujo del rectángulo
+		ctx.strokeStyle = "#00FF00";
+		ctx.lineWidth = 3;
+		ctx.strokeRect(x, y, w, h);
+	  
+		// Texto de la emoción
+		ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+		ctx.fillRect(x, y - 30, ctx.measureText(emotion).width + 20, 25);
+		ctx.fillStyle = "#fff";
+		ctx.font = "16px Arial";
+		ctx.fillText(emotion, x + 10, y - 12);
+	  };
+	  
 	
 	const clearCanvas = () => {
 	const canvas = canvasRef.current;
@@ -125,13 +124,15 @@ function EmotionsDetector() {
             setCameraActive(!cameraActive);
             setDetecting(!cameraActive); // empieza a detectar al activar cámara
             clearCanvas();
+			setError("");
           }}
         >
           {cameraActive ? "Turn Off Camera" : "Activate Camera"}
         </button>
 
         {cameraActive && (
-			<div className="relative w-fit">
+			<div className="video-wrapper">
+          <div className="video-container">
           <video
               ref={videoRef}
               autoPlay
@@ -141,17 +142,19 @@ function EmotionsDetector() {
               height={480}
               className="rounded-xl"
             />
-		  <canvas
-              ref={canvasRef}
-              className="absolute top-0 left-0 pointer-events-none"
-              width={640}
-              height={480}
-            />
+		    <canvas
+				ref={canvasRef}
+				className="emotion-overlay absolute top-0 left-0 pointer-events-none"
+				width={640}
+				height={480}
+			/>
       	</div>
+		</div>
 		)}
 	  </div>
 
-	  {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
+	  {error && <p className="error-message">{error}</p>}
+
 
       <div className="github-note">
         <p>🔗 Curious about how it works?</p>

@@ -301,3 +301,56 @@ canvas {
 .clear-btn:hover {
   background-color: darkred;
 }
+
+.relative {
+  position: relative;
+}
+
+.video-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.video-container {
+  position: relative;
+  width: fit-content;
+}
+
+.emotion-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  background-color: transparent !important;
+  z-index: 10;
+}
+
+video {
+  z-index: 1;
+  position: relative;
+  display: block; /* para evitar espacios raros */
+}
+
+.error-message {
+  background-color: rgba(255, 200, 200, 0.8); /* un rojito suave translúcido */
+  color: #7a1f1f; /* un rojo oscuro que contrasta */
+  padding: 10px 15px;
+  border-radius: 12px;
+  font-weight: 500;
+  max-width: fit-content;
+  margin: 20px auto; /* lo centra horizontalmente */
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
