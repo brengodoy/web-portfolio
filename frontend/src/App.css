@@ -67,8 +67,11 @@
 }
 
 .menu-icon {
-  font-size: 24px;
+  font-size: 2rem;
   cursor: pointer;
+  color: #000;
+  z-index: 1000;
+  position: relative;
 }
 
 main {
