@@ -33,6 +33,17 @@
   }
 }
 
+@media (min-width: 768px) {
+  .canvas-container {
+    width: 60%;
+    max-width: 500px;
+  }
+
+  .drawing-canvas {
+    max-width: 280px;
+  }
+}
+
 .card {
   padding: 2em;
 }
@@ -192,6 +203,8 @@ canvas {
   border: 1px solid #ccc;
   background-color: #fff;
   cursor: crosshair;
+  display: block;
+  margin: 0 auto;
 }
 
 .github-note p {
@@ -273,12 +286,14 @@ canvas {
 
 .canvas-container {
   background-color: white;
-  padding: 0rem;
+  padding: 1rem;
   border-radius: 10px;
   box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
-  margin: 0rem 15rem;
+  margin: 2rem auto;
   text-align: center;
-  border: 2px solid black
+  border: 2px solid black;
+  max-width: 320px; /* se adapta al canvas que mide 280px + padding */
+  width: 100%;
 }
 
 .canvas-container hr {
@@ -298,13 +313,14 @@ canvas {
 }
 
 .drawing-canvas {
-  border: 1px solid #ccc;
-  background-color: white;
-  cursor: crosshair;
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
 }
 
 .clear-btn {
-  margin-top: 0rem;
   background-color: red;
   color: white;
   border: none;
@@ -312,7 +328,8 @@ canvas {
   font-size: 1rem;
   border-radius: 8px;
   cursor: pointer;
-  margin-bottom: 0.5rem;
+  margin: 1rem auto 0 auto;
+  display: block;
 }
 
 .clear-btn:hover {
