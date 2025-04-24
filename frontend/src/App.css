@@ -134,6 +134,11 @@ main h1 {
   position: relative;
 }
 
+.projects-item {
+  color: #000;  /* Establece el color negro como predeterminado */
+  text-decoration: none; /* Si el color sigue mal, asegúrate de quitar la subrayado */
+}
+
 .side-menu ul {
   list-style: none;
   padding: 0;
