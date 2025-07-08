@@ -218,6 +218,7 @@ canvas {
   cursor: crosshair;
   display: block;
   margin: 0 auto;
+  touch-action: none; 
 }
 
 .github-note p {

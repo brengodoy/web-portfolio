@@ -94,6 +94,17 @@ function NumberDetector() { //Todo lo que está dentro de esta función es lo qu
       });
   }  
 
+  function convertTouchToMouse(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    return {
+      nativeEvent: {
+        offsetX: touch.clientX - e.target.getBoundingClientRect().left,
+        offsetY: touch.clientY - e.target.getBoundingClientRect().top
+      }
+    };
+  }
+
   return (
     <section className="number-detector">
       <h2>Try My Number Detector!</h2>
@@ -114,6 +125,12 @@ function NumberDetector() { //Todo lo que está dentro de esta función es lo qu
           onMouseMove={handleMouseMove}
           onMouseUp={stopDrawing}
           onMouseLeave={stopDrawing}
+          onTouchStart={(e) => startDrawing(convertTouchToMouse(e))}
+          onTouchMove={(e) => {
+            e.preventDefault();
+            handleMouseMove(convertTouchToMouse(e));
+          }}
+          onTouchEnd={stopDrawing}
         />
         <button className="clear-btn" onClick={clearCanvas}>Clear</button>
       </div>
