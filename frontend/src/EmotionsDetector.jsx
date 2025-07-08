@@ -87,24 +87,39 @@ function EmotionsDetector() {
 	};
 	
 	const drawOnCanvas = (emotion, face) => {
+		const canvas = canvasRef.current;
 		const ctx = canvasRef.current.getContext("2d");
-		ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+		const video = videoRef.current;
+		canvas.width = video.offsetWidth;
+		canvas.height = video.offsetHeight;
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
 	  
 		if (!face) return;
 	  
 		const { x, y, w, h } = face;
 	  
+		const scaleX = canvas.width / video.videoWidth;
+  		const scaleY = canvas.height / video.videoHeight;
+		const adjustedX = x * scaleX;
+		const adjustedY = y * scaleY;
+		const adjustedW = w * scaleX;
+		const adjustedH = h * scaleY;
+
 		// Dibujo del rectángulo
 		ctx.strokeStyle = "#00FF00";
 		ctx.lineWidth = 3;
-		ctx.strokeRect(x, y, w, h);
+		ctx.strokeRect(adjustedX, adjustedY, adjustedW, adjustedH);
+		//ctx.strokeRect(x, y, w, h);
 	  
 		// Texto de la emoción
+		ctx.font = "16px Arial"; // 👈 Esto primero
+		const textWidth = ctx.measureText(emotion).width;
+
 		ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
-		ctx.fillRect(x, y - 30, ctx.measureText(emotion).width + 20, 25);
+		ctx.fillRect(adjustedX, adjustedY - 30, textWidth + 20, 25); // +20 es el padding horizontal
+
 		ctx.fillStyle = "#fff";
-		ctx.font = "16px Arial";
-		ctx.fillText(emotion, x + 10, y - 12);
+		ctx.fillText(emotion, adjustedX + 10, adjustedY - 12); // +10 para centrar el texto dentro del rectángulo
 	  };
 	  
 	
@@ -141,20 +156,16 @@ function EmotionsDetector() {
 			<div className="video-wrapper">
           <div className="video-container">
           <video
-              ref={videoRef}
-              autoPlay
-              muted
-              playsInline
-              width={640}
-              height={480}
-              className="rounded-xl"
-            />
-		    <canvas
-				ref={canvasRef}
-				className="emotion-overlay absolute top-0 left-0 pointer-events-none"
-				width={640}
-				height={480}
-			/>
+			ref={videoRef}
+			autoPlay
+			muted
+			playsInline
+			className="video-feed"
+		  />
+		  <canvas
+			ref={canvasRef}
+			className="emotion-overlay"
+		  />
       	</div>
 		</div>
 		)}
