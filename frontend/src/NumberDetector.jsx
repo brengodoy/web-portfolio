@@ -95,7 +95,7 @@ function NumberDetector() { //Todo lo que está dentro de esta función es lo qu
   }  
 
   function convertTouchToMouse(e) {
-    e.preventDefault();
+    //e.preventDefault();
     const touch = e.touches[0];
     return {
       nativeEvent: {
@@ -127,7 +127,7 @@ function NumberDetector() { //Todo lo que está dentro de esta función es lo qu
           onMouseLeave={stopDrawing}
           onTouchStart={(e) => startDrawing(convertTouchToMouse(e))}
           onTouchMove={(e) => {
-            e.preventDefault();
+            //e.preventDefault();
             handleMouseMove(convertTouchToMouse(e));
           }}
           onTouchEnd={stopDrawing}
