@@ -11,6 +11,33 @@ function NumberDetector() { //Todo lo que está dentro de esta función es lo qu
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  const handleTouchMove = (e) => {
+    e.preventDefault();
+    handleMouseMove(convertTouchToMouse(e));
+  };
+
+  const handleTouchStart = (e) => {
+    e.preventDefault();
+    startDrawing(convertTouchToMouse(e));
+  };
+
+  const handleTouchEnd = (e) => {
+    e.preventDefault();
+    stopDrawing();
+    sendImageToBackend(canvas);
+  };
+
+  canvas.addEventListener("touchstart", handleTouchStart, { passive: false });
+  canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
+  canvas.addEventListener("touchend", handleTouchEnd, { passive: false });
+
+  return () => {
+    canvas.removeEventListener("touchstart", handleTouchStart);
+    canvas.removeEventListener("touchmove", handleTouchMove);
+    canvas.removeEventListener("touchend", handleTouchEnd);
+  };
+
   }, []);
 
   let timeoutId;
