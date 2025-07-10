@@ -1,9 +1,9 @@
 import './App.css';
 import React, { useRef, useState, useEffect } from 'react';
 
-function NumberDetector() { //Todo lo que está dentro de esta función es lo que se va a ver y lo que va a pasar cuando se use.
+function NumberDetector() {
   const canvasRef = useRef(null);
-  const [drawing, setDrawing] = useState(false); // saber si la persona esta dibujando o no
+  const [drawing, setDrawing] = useState(false);
   const [prediction, setPrediction] = useState(null);
 
   useEffect(() => {
@@ -11,55 +11,34 @@ function NumberDetector() { //Todo lo que está dentro de esta función es lo qu
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  const handleTouchMove = (e) => {
-    e.preventDefault();
-    handleMouseMove(convertTouchToMouse(e));
-  };
-
-  const handleTouchStart = (e) => {
-    e.preventDefault();
-    startDrawing(convertTouchToMouse(e));
-  };
-
-  const handleTouchEnd = (e) => {
-    e.preventDefault();
-    stopDrawing();
-    sendImageToBackend(canvas);
-  };
-
-  canvas.addEventListener("touchstart", handleTouchStart, { passive: false });
-  canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
-  canvas.addEventListener("touchend", handleTouchEnd, { passive: false });
-
-  return () => {
-    canvas.removeEventListener("touchstart", handleTouchStart);
-    canvas.removeEventListener("touchmove", handleTouchMove);
-    canvas.removeEventListener("touchend", handleTouchEnd);
-  };
-
   }, []);
 
   let timeoutId;
 
-  const handleMouseMove = (e) => {
-    if (!drawing) return;
-    draw(e);
+  const getCoordinates = (e) => {
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
 
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => {
-      sendImageToBackend(canvasRef.current);
-    }, 100); // Delay para no saturar
+    if (e.touches) {
+      return {
+        x: e.touches[0].clientX - rect.left,
+        y: e.touches[0].clientY - rect.top
+      };
+    } else {
+      return {
+        x: e.nativeEvent.offsetX,
+        y: e.nativeEvent.offsetY
+      };
+    }
   };
 
   const startDrawing = (e) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
+    const { x, y } = getCoordinates(e);
+
     ctx.beginPath();
-    ctx.moveTo(
-      e.nativeEvent.offsetX,
-      e.nativeEvent.offsetY
-    );
+    ctx.moveTo(x, y);
     setDrawing(true);
   };
 
@@ -67,15 +46,23 @@ function NumberDetector() { //Todo lo que está dentro de esta función es lo qu
     if (!drawing) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
+    const { x, y } = getCoordinates(e);
+
     ctx.lineWidth = 10;
     ctx.lineCap = 'round';
     ctx.strokeStyle = 'black';
 
-    ctx.lineTo(
-      e.nativeEvent.offsetX,
-      e.nativeEvent.offsetY
-    );
+    ctx.lineTo(x, y);
     ctx.stroke();
+  };
+
+  const handleMove = (e) => {
+    draw(e);
+
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      sendImageToBackend(canvasRef.current);
+    }, 100);
   };
 
   const stopDrawing = () => {
@@ -89,47 +76,37 @@ function NumberDetector() { //Todo lo que está dentro de esta función es lo qu
 
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    setDrawing(false);
   };
-  
+
   function sendImageToBackend(canvas) {
     const dataURL = canvas.toDataURL("image/png");
     const byteString = atob(dataURL.split(',')[1]);
     const mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0];
-  
+
     const ab = new ArrayBuffer(byteString.length);
     const ia = new Uint8Array(ab);
     for (let i = 0; i < byteString.length; i++) {
       ia[i] = byteString.charCodeAt(i);
     }
-  
+
     const blob = new Blob([ab], { type: mimeString });
-  
+
     const formData = new FormData();
     formData.append("image", blob, "drawing.png");
-  
+
     fetch("http://localhost:5000/detect_number", {
       method: "POST",
       body: formData,
     })
       .then((res) => res.json())
       .then((data) => {
-        //console.log("Predicción:", data.prediction);
         setPrediction(data.prediction);
       })
       .catch((error) => {
         console.error("Error al enviar imagen al backend:", error);
       });
-  }  
-
-  function convertTouchToMouse(e) {
-    //e.preventDefault();
-    const touch = e.touches[0];
-    return {
-      nativeEvent: {
-        offsetX: touch.clientX - e.target.getBoundingClientRect().left,
-        offsetY: touch.clientY - e.target.getBoundingClientRect().top
-      }
-    };
   }
 
   return (
@@ -149,15 +126,16 @@ function NumberDetector() { //Todo lo que está dentro de esta función es lo qu
           width={280}
           height={280}
           onMouseDown={startDrawing}
-          onMouseMove={handleMouseMove}
+          onMouseMove={handleMove}
           onMouseUp={stopDrawing}
           onMouseLeave={stopDrawing}
-          onTouchStart={(e) => startDrawing(convertTouchToMouse(e))}
-          onTouchMove={(e) => {
-            //e.preventDefault();
-            handleMouseMove(convertTouchToMouse(e));
+          onTouchStart={startDrawing}
+          onTouchMove={handleMove}
+          onTouchEnd={() => {
+            stopDrawing();
+            sendImageToBackend(canvasRef.current);
           }}
-          onTouchEnd={stopDrawing}
+          style={{ touchAction: "none" }}
         />
         <button className="clear-btn" onClick={clearCanvas}>Clear</button>
       </div>
